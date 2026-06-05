@@ -9,7 +9,26 @@
 </head>
 <body>
     <div id="root"></div>
-    <script type="text/babel">
+        <script type="text/babel">
+        function App() {
+            const [message, setMessage] = React.useState("مرحباً بك في تطبيق ParaMaster Pro");
+
+            return (
+                <div style={{ textAlign: 'center', marginTop: '50px' }}>
+                    <h1>{message}</h1>
+                    <button 
+                        onClick={() => setMessage("تم الضغط بنجاح! React يعمل!")}
+                        style={{ padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}
+                    >
+                        اضغطي هنا
+                    </button>
+                </div>
+            );
+        }
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+
         function App() {
             return (
                 <div>
