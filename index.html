@@ -1,32 +1,46 @@
-<script type="text/babel">
-    function TodoApp() {
-        const [tasks, setTasks] = React.useState([]);
-        const [input, setInput] = React.useState("");
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>ParaMaster Pro</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
 
-        const addTask = () => {
-            if (input !== "") {
-                setTasks([...tasks, input]);
-                setInput("");
-            }
-        };
+    <script type="text/babel">
+        function TodoApp() {
+            const [tasks, setTasks] = React.useState([]);
+            const [input, setInput] = React.useState("");
 
-        return (
-            <div style={{ textAlign: 'center', marginTop: '50px' }}>
-                <h1>قائمة مهامي</h1>
-                <input 
-                    value={input} 
-                    onChange={(e) => setInput(e.target.value)} 
-                    placeholder="كتبي مهمة جديدة..."
-                />
-                <button onClick={addTask}>زيدي المهمة</button>
-                <ul>
-                    {tasks.map((task, index) => (
-                        <li key={index}>{task}</li>
-                    ))}
-                </ul>
-            </div>
-        );
-    }
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<TodoApp />);
-</script>
+            const addTask = () => {
+                if (input.trim() !== "") {
+                    setTasks([...tasks, input]);
+                    setInput("");
+                }
+            };
+
+            return (
+                <div style={{ textAlign: 'center', marginTop: '50px', fontFamily: 'sans-serif' }}>
+                    <h1>قائمة مهامي</h1>
+                    <input 
+                        value={input} 
+                        onChange={(e) => setInput(e.target.value)} 
+                        placeholder="كتبي مهمة جديدة..."
+                    />
+                    <button onClick={addTask}>زيدي المهمة</button>
+                    <ul>
+                        {tasks.map((task, index) => (
+                            <li key={index}>{task}</li>
+                        ))}
+                    </ul>
+                </div>
+            );
+        }
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<TodoApp />);
+    </script>
+</body>
+</html>
