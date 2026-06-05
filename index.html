@@ -2,71 +2,57 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>ParaMaster Pro المطور</title>
+    <title>ParaMaster Dashboard</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
     <style>
-        body { font-family: sans-serif; text-align: center; background-color: #f4f4f9; padding: 20px; direction: rtl; }
-        .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .task-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; align-items: center; }
-        input { padding: 10px; width: 60%; border: 1px solid #ddd; border-radius: 5px; }
-        button { padding: 8px 15px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 5px; margin-right: 5px; }
-        .del-btn { background: #dc3545; }
+        body { font-family: sans-serif; margin: 0; display: flex; height: 100vh; background: #f0f2f5; direction: rtl; }
+        .sidebar { width: 200px; background: #2c3e50; color: white; padding: 20px; }
+        .main { flex: 1; padding: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn { padding: 10px; cursor: pointer; border: none; border-radius: 4px; margin-top: 10px; width: 100%; }
+        .add-btn { background: #27ae60; color: white; }
+        .sidebar-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #34495e; }
+        .sidebar-item:hover { background: #34495e; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        // مكون إضافة المهام
-        function AddTask({ onAdd }) {
-            const [text, setText] = React.useState("");
-            const handleAdd = () => {
-                if (text.trim() !== "") {
-                    onAdd(text);
-                    setText("");
-                } else {
-                    alert("لا يمكن إضافة مهمة فارغة!");
-                }
-            };
-            return (
-                <div style={{ marginBottom: '20px' }}>
-                    <input value={text} onChange={(e) => setText(e.target.value)} placeholder="مهمة جديدة..." />
-                    <button onClick={handleAdd}>إضافة</button>
-                </div>
-            );
-        }
-
-        // مكون المهمة الواحدة
-        function TaskItem({ task, onDelete }) {
-            return (
-                <li className="task-item">
-                    {task.text}
-                    <button className="del-btn" onClick={onDelete}>حذف</button>
-                </li>
-            );
-        }
-
-        // المكون الرئيسي
         function App() {
             const [tasks, setTasks] = React.useState([]);
+            const [input, setInput] = React.useState("");
 
-            const addTask = (text) => setTasks([...tasks, { id: Date.now(), text }]);
-            const deleteTask = (id) => setTasks(tasks.filter(t => t.id !== id));
+            const addTask = () => {
+                if (input.trim()) {
+                    setTasks([...tasks, { id: Date.now(), text: input }]);
+                    setInput("");
+                }
+            };
 
             return (
-                <div className="container">
-                    <h1>ParaMaster Pro</h1>
-                    <AddTask onAdd={addTask} />
-                    <ul style={{ listStyle: 'none', padding: 0 }}>
-                        {tasks.map(t => <TaskItem key={t.id} task={t} onDelete={() => deleteTask(t.id)} />)}
-                    </ul>
-                </div>
+                <>
+                    <div className="sidebar">
+                        <h3>ParaMaster</h3>
+                        <div className="sidebar-item">🏠 الرئيسية</div>
+                        <div className="sidebar-item">📝 المهام</div>
+                        <div className="sidebar-item">⚙️ الإعدادات</div>
+                    </div>
+                    <div className="main">
+                        <div className="card">
+                            <h1>إدارة المهام</h1>
+                            <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="مهمة جديدة..." />
+                            <button className="btn add-btn" onClick={addTask}>إضافة مهمة</button>
+                            <ul>
+                                {tasks.map(t => <li key={t.id}>{t.text}</li>)}
+                            </ul>
+                        </div>
+                    </div>
+                </>
             );
         }
-
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
