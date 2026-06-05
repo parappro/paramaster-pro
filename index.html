@@ -1,41 +1,43 @@
-<script type="text/babel">
-    function App() {
-        const [tasks, setTasks] = React.useState([]);
-        const [activeTab, setActiveTab] = React.useState('add'); // للتحكم في التبويبة النشطة
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>ParaMaster Pro</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body { margin: 0; font-family: sans-serif; background: #f4f7f6; direction: rtl; display: flex; height: 100vh; }
+        .sidebar { width: 200px; background: #2c3e50; color: white; padding: 20px; }
+        .main { flex: 1; padding: 20px; }
+        .menu-item { cursor: pointer; padding: 10px; border-bottom: 1px solid #34495e; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-        return (
-            <div className="wrapper">
-                <div className="sidebar">
-                    <h2>PARA MASTER</h2>
-                    <div className="menu-item" onClick={() => setActiveTab('add')}>➕ إضافة مهمة</div>
-                    <div className="menu-item" onClick={() => setActiveTab('list')}>📋 قائمة المهام</div>
-                </div>
-                <div className="main">
-                    <div className="card">
-                        {activeTab === 'add' ? (
-                            <div>
-                                <h3>إضافة مهمة جديدة</h3>
-                                <input id="taskInput" placeholder="اكتبي المهمة هنا..." />
-                                <button onClick={() => {
-                                    const val = document.getElementById('taskInput').value;
-                                    setTasks([...tasks, val]);
-                                }}>حفظ</button>
-                            </div>
-                        ) : (
-                            <div>
-                                <h3>قائمة المهام</h3>
-                                <table>
-                                    <thead><tr><th>م</th><th>المهمة</th></tr></thead>
-                                    <tbody>
-                                        {tasks.map((t, i) => <tr key={i}><td>{i+1}</td><td>{t}</td></tr>)}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
+    <script type="text/babel">
+        function App() {
+            const [view, setView] = React.useState('list');
+
+            return (
+                <div style={{display: 'flex', width: '100%'}}>
+                    <div className="sidebar">
+                        <h2>PARA MASTER</h2>
+                        <div className="menu-item" onClick={() => setView('add')}>➕ إضافة</div>
+                        <div className="menu-item" onClick={() => setView('list')}>📋 قائمة</div>
+                    </div>
+                    <div className="main">
+                        <div className="card">
+                            {view === 'add' ? <h1>صفحة الإضافة</h1> : <h1>قائمة المهام</h1>}
+                        </div>
                     </div>
                 </div>
-            </div>
-        );
-    }
-    // ... باقي كود الريندر (Render)
-</script>
+            );
+        }
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
