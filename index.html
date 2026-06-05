@@ -2,18 +2,32 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>ParaMaster Pro</title>
+    <title>ParaMaster Pro - تطبيق المهام</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body { font-family: sans-serif; text-align: center; background-color: #f4f4f9; padding: 20px; }
+        .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        input { padding: 10px; width: 60%; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 5px; margin-left: 5px; }
+        ul { list-style: none; padding: 0; margin-top: 20px; }
+        li { background: #eee; margin: 5px 0; padding: 10px; display: flex; justify-content: space-between; border-radius: 5px; }
+    </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
         function TodoApp() {
-            const [tasks, setTasks] = React.useState([]);
+            // تحميل المهام من الذاكرة (localStorage)
+            const [tasks, setTasks] = React.useState(() => JSON.parse(localStorage.getItem('tasks')) || []);
             const [input, setInput] = React.useState("");
+
+            // حفظ المهام في الذاكرة كلما تغيرت
+            React.useEffect(() => {
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            }, [tasks]);
 
             const addTask = () => {
                 if (input.trim() !== "") {
@@ -22,18 +36,21 @@
                 }
             };
 
+            const deleteTask = (index) => {
+                setTasks(tasks.filter((_, i) => i !== index));
+            };
+
             return (
-                <div style={{ textAlign: 'center', marginTop: '50px', fontFamily: 'sans-serif' }}>
+                <div className="container">
                     <h1>قائمة مهامي</h1>
-                    <input 
-                        value={input} 
-                        onChange={(e) => setInput(e.target.value)} 
-                        placeholder="كتبي مهمة جديدة..."
-                    />
-                    <button onClick={addTask}>زيدي المهمة</button>
+                    <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="مهمة جديدة..." />
+                    <button onClick={addTask}>إضافة</button>
                     <ul>
                         {tasks.map((task, index) => (
-                            <li key={index}>{task}</li>
+                            <li key={index}>
+                                {task} 
+                                <button onClick={() => deleteTask(index)} style={{background: '#dc3545'}}>حذف</button>
+                            </li>
                         ))}
                     </ul>
                 </div>
