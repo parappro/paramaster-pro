@@ -7,62 +7,63 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        body { font-family: sans-serif; transition: background 0.3s; padding: 20px; text-align: center; }
-        body.dark { background-color: #333; color: white; }
-        .container { max-width: 450px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); color: black; }
-        .dark .container { background: #444; color: white; }
-        input { padding: 10px; width: 60%; border: 1px solid #ddd; border-radius: 5px; }
-        button { padding: 10px; cursor: pointer; border: none; border-radius: 5px; margin: 5px; }
-        .add-btn { background: #28a745; color: white; }
-        .del-btn { background: #dc3545; color: white; }
-        ul { list-style: none; padding: 0; }
-        li { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
+        body { font-family: sans-serif; text-align: center; background-color: #f4f4f9; padding: 20px; direction: rtl; }
+        .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .task-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        function TodoApp() {
-            const [tasks, setTasks] = React.useState(() => JSON.parse(localStorage.getItem('tasks')) || []);
-            const [input, setInput] = React.useState("");
-            const [darkMode, setDarkMode] = React.useState(false);
+        // 1. مكون إضافة المهام
+        function AddTask({ onAdd }) {
+            const [text, setText] = React.useState("");
+            return (
+                <div>
+                    <input value={text} onChange={(e) => setText(e.target.value)} />
+                    <button onClick={() => { onAdd(text); setText(""); }}>إضافة</button>
+                </div>
+            );
+        }
 
-            React.useEffect(() => {
-                localStorage.setItem('tasks', JSON.stringify(tasks));
-                document.body.className = darkMode ? 'dark' : '';
-            }, [tasks, darkMode]);
+        // 2. مكون عرض المهمة الواحدة
+        function TaskItem({ task, onDelete }) {
+            return (
+                <li className="task-item">
+                    {task.text}
+                    <button onClick={onDelete}>حذف</button>
+                </li>
+            );
+        }
 
-            const addTask = () => {
-                if (input.trim()) {
-                    setTasks([...tasks, { text: input, id: Date.now(), completed: false }]);
-                    setInput("");
-                }
+        // 3. المكون الرئيسي (القائد)
+        function App() {
+            const [tasks, setTasks] = React.useState([]);
+
+            const addTask = (text) => {
+                if(text) setTasks([...tasks, { id: Date.now(), text }]);
             };
 
-            const toggleTask = (id) => {
-                setTasks(tasks.map(t => t.id === id ? {...t, completed: !t.completed} : t));
+            const deleteTask = (id) => {
+                setTasks(tasks.filter(t => t.id !== id));
             };
 
             return (
                 <div className="container">
-                    <button onClick={() => setDarkMode(!darkMode)}>تغيير الوضع</button>
-                    <h1>قائمة مهامي</h1>
-                    <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="مهمة جديدة..." />
-                    <button className="add-btn" onClick={addTask}>إضافة</button>
+                    <h1>ParaMaster Pro</h1>
+                    <AddTask onAdd={addTask} />
                     <ul>
-                        {tasks.map(task => (
-                            <li key={task.id} style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>
-                                <span onClick={() => toggleTask(task.id)} style={{cursor: 'pointer'}}>{task.text}</span>
-                                <button className="del-btn" onClick={() => setTasks(tasks.filter(t => t.id !== task.id))}>حذف</button>
-                            </li>
+                        {tasks.map(t => (
+                            <TaskItem key={t.id} task={t} onDelete={() => deleteTask(t.id)} />
                         ))}
                     </ul>
                 </div>
             );
         }
+
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<TodoApp />);
+        root.render(<App />);
     </script>
 </body>
 </html>
