@@ -1,44 +1,72 @@
-<script type="text/babel">
-    function TodoApp() {
-        const [tasks, setTasks] = React.useState(() => JSON.parse(localStorage.getItem('tasks')) || []);
-        const [input, setInput] = React.useState("");
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>ParaMaster Pro - تطبيق المهام</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body { font-family: sans-serif; text-align: center; background-color: #f4f4f9; padding: 20px; direction: rtl; }
+        .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        input { padding: 10px; width: 60%; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 5px; margin-right: 5px; }
+        ul { list-style: none; padding: 0; margin-top: 20px; }
+        li { background: #eee; margin: 5px 0; padding: 10px; display: flex; justify-content: space-between; align-items: center; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-        React.useEffect(() => {
-            localStorage.setItem('tasks', JSON.stringify(tasks));
-        }, [tasks]);
+    <script type="text/babel">
+        function TodoApp() {
+            const [tasks, setTasks] = React.useState(() => JSON.parse(localStorage.getItem('tasks')) || []);
+            const [input, setInput] = React.useState("");
 
-        const addTask = () => {
-            if (input.trim() !== "") {
-                setTasks([...tasks, { text: input, completed: false }]);
-                setInput("");
-            }
-        };
+            React.useEffect(() => {
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            }, [tasks]);
 
-        const toggleTask = (index) => {
-            const newTasks = [...tasks];
-            newTasks[index].completed = !newTasks[index].completed;
-            setTasks(newTasks);
-        };
+            const addTask = () => {
+                if (input.trim() !== "") {
+                    setTasks([...tasks, { text: input, completed: false }]);
+                    setInput("");
+                }
+            };
 
-        const deleteTask = (index) => {
-            setTasks(tasks.filter((_, i) => i !== index));
-        };
+            const toggleTask = (index) => {
+                const newTasks = [...tasks];
+                newTasks[index].completed = !newTasks[index].completed;
+                setTasks(newTasks);
+            };
 
-        return (
-            <div className="container">
-                <h1>قائمة مهامي</h1>
-                <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="مهمة جديدة..." />
-                <button onClick={addTask}>إضافة</button>
-                <ul>
-                    {tasks.map((task, index) => (
-                        <li key={index} style={{ textDecoration: task.completed ? 'line-through' : 'none', opacity: task.completed ? 0.6 : 1 }}>
-                            <span onClick={() => toggleTask(index)} style={{ cursor: 'pointer' }}>{task.text}</span>
-                            <button onClick={() => deleteTask(index)} style={{background: '#dc3545'}}>حذف</button>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        );
-    }
-    // ... (باقي الكود هو نفسه)
-</script>
+            const deleteTask = (index) => {
+                setTasks(tasks.filter((_, i) => i !== index));
+            };
+
+            return (
+                <div className="container">
+                    <h1>قائمة مهامي</h1>
+                    <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="مهمة جديدة..." />
+                    <button onClick={addTask}>إضافة</button>
+                    <ul>
+                        {tasks.map((task, index) => (
+                            <li key={index} style={{ opacity: task.completed ? 0.5 : 1 }}>
+                                <span 
+                                    onClick={() => toggleTask(index)} 
+                                    style={{ textDecoration: task.completed ? 'line-through' : 'none', cursor: 'pointer' }}
+                                >
+                                    {task.text}
+                                </span>
+                                <button onClick={() => deleteTask(index)} style={{background: '#dc3545'}}>حذف</button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            );
+        }
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<TodoApp />);
+    </script>
+</body>
+</html>
